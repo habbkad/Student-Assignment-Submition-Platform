@@ -1,22 +1,19 @@
 const model = require("../models/assignments");
 const errorResponse = require("../utils/errorResponse");
+const studentModel = require("../models/students");
 
 //desc   create new assignment
 //route  api/v1/assignment
 //secure false
-exports.submit_assignment = async (req, res) => {
-  // console.log(req.body);
-  const { title, indexNumber, gen, week, github_link, topic, pdfUrl } =
-    req.body;
-  const newAssignment = await new model({
-    title,
-    indexNumber,
-    gen,
-    week,
-    github_link,
-    topic,
-    pdfUrl,
-  }).save();
+exports.submit_assignment = async (req, res, next) => {
+  req.body.student = req.params.studentId;
+  const student = await studentModel.findById(req.params.studentId);
+  console.log(student);
+  if (!student) {
+    return next(new errorResponse(`no student with id ${id} found`, 404));
+  }
+
+  const newAssignment = await model.create(req.body);
 
   res.status(200).json({ message: "new assignment", newAssignment });
 };

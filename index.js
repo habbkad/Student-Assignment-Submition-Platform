@@ -3,12 +3,12 @@ const env = require("dotenv");
 const connect = require("./src/config/api");
 const error = require("./src/middleware/error");
 
-// dotenv config
-env.config({ path: "./src/config/.env" });
-
 //routes
 const studentRoutes = require("./src/routes/students_routes");
 const assignmentRoutes = require("./src/routes/assignment_routes");
+
+// dotenv config
+env.config({ path: "./src/config/.env" });
 
 //connect to data base
 connect();
@@ -21,8 +21,8 @@ app.use(express.json());
 //app.use(express.urlencoded({ extended: true }));
 
 //create api endpoints
-app.use("/api/v1/assignments/students", studentRoutes);
-app.use("/api/v1/assignments", assignmentRoutes);
+app.use("/api/v1/students", studentRoutes);
+app.use("/api/v1/:studentId/assignments", assignmentRoutes);
 
 app.use(error);
 

@@ -7,7 +7,7 @@ const {
   get_single_assignment,
 } = require("../controllers/assignment");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.route("/").post(submit_assignment).get(all_assignment);
 router
