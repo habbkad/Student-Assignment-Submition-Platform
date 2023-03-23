@@ -1,14 +1,14 @@
 const model = require("../models/assignments");
 const errorResponse = require("../utils/errorResponse");
 const studentModel = require("../models/students");
+const path = require("path");
 
 //desc   create new assignment
-//route  api/v1/assignment
-//secure false
+//route  api/v1/:studentsId/assignment
+//secure true
 exports.submit_assignment = async (req, res, next) => {
   req.body.student = req.params.studentId;
   const student = await studentModel.findById(req.params.studentId);
-  console.log(student);
   if (!student) {
     return next(new errorResponse(`no student with id ${id} found`, 404));
   }
@@ -16,6 +16,70 @@ exports.submit_assignment = async (req, res, next) => {
   const newAssignment = await model.create(req.body);
 
   res.status(200).json({ message: "new assignment", newAssignment });
+};
+
+//desc   upload assignment files
+//route  api/v1/assignment/:studentsId/:assignmentId/file
+//secure true
+exports.uploadFiles = async (req, res, next) => {
+  console.log("bjjgjhgfhgdhffd");
+  const assignment = await model.findById(req.params.assignmentId);
+  const student = await studentModel.findById(req.params.studentId);
+
+  if (!assignment) {
+    return next(
+      new errorResponse(
+        `Assigment not found with id of ${req.params.assignmentId}`,
+        404
+      )
+    );
+  }
+
+  if (!req.files) {
+    return next(new errorResponse(`Please upload a file`, 400));
+  }
+
+  const file = req.files.file;
+
+  // Make sure the image is a photo
+  if (!file.mimetype.startsWith("image")) {
+    return next(new errorResponse(`Please upload an image file`, 400));
+  }
+
+  // Check filesize
+  if (file.size > 1000000) {
+    return next(
+      new errorResponse(`Please upload an image less than ${1000000}`, 400)
+    );
+  }
+
+  // Create custom filename
+  file.name = `photo_${assignment._id}${path.parse(file.name).ext}`;
+
+  file.mv(`./assignments/uploads/${file.name}`, async (err) => {
+    if (err) {
+      console.error(err);
+      return next(new errorResponse(`Problem with file upload`, 500));
+    }
+
+    await model.findByIdAndUpdate(req.params.assignmentId, {
+      pdfUrl: file.name,
+    });
+
+    for (let item of student.assignments) {
+      console.log(item._id.toString());
+      if (item._id.toString() === assignment._id.toString()) {
+        return next(new errorResponse(`assignment already submitted`, 500));
+      }
+    }
+    student.assignments.push({ _id: assignment._id });
+    await student.save();
+
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    });
+  });
 };
 
 //desc   get all assignments

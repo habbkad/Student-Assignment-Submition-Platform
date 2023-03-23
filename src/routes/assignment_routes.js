@@ -5,11 +5,16 @@ const {
   all_assignment,
   update_assignment,
   get_single_assignment,
+  uploadFiles,
 } = require("../controllers/assignment");
 
 const router = express.Router({ mergeParams: true });
+router.route("/").get(all_assignment);
 
-router.route("/").post(submit_assignment).get(all_assignment);
+router.route("/:studentId").post(submit_assignment);
+
+router.route("/:studentId/:assignmentId").put(uploadFiles);
+
 router
   .route("/:id")
   .delete(delete_assignment)

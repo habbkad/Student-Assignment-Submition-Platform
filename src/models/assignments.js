@@ -32,6 +32,10 @@ const assignment_schema = mongoose.Schema({
     type: String,
     required: [true, "please provide assignment file"],
   },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model("assignments", assignment_schema);

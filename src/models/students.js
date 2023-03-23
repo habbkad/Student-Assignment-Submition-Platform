@@ -32,6 +32,8 @@ const Student_schema = mongoose.Schema({
       "please provide a valid email. ",
     ],
   },
+  assignments: [{ type: mongoose.ObjectId }],
+
   profileUrl: {
     type: String,
   },

@@ -1,7 +1,9 @@
+const path = require("path");
 const express = require("express");
 const env = require("dotenv");
 const connect = require("./src/config/api");
 const error = require("./src/middleware/error");
+const fileUpload = require("express-fileupload");
 
 //routes
 const studentRoutes = require("./src/routes/students_routes");
@@ -20,9 +22,16 @@ const app = express();
 app.use(express.json());
 //app.use(express.urlencoded({ extended: true }));
 
+//use file upload
+app.use(fileUpload());
+
+// Set static folder
+app.use(express.static(path.join(__dirname, "assignments")));
+app.use(express.static(path.join(__dirname, "profile")));
+
 //create api endpoints
 app.use("/api/v1/students", studentRoutes);
-app.use("/api/v1/:studentId/assignments", assignmentRoutes);
+app.use("/api/v1/assignments", assignmentRoutes);
 
 app.use(error);
 
