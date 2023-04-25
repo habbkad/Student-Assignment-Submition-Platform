@@ -8,6 +8,7 @@ const fileUpload = require("express-fileupload");
 //routes
 const studentRoutes = require("./src/routes/students_routes");
 const assignmentRoutes = require("./src/routes/assignment_routes");
+const userRoutes = require("./src/routes/user");
 
 // dotenv config
 env.config({ path: "./src/config/.env" });
@@ -32,6 +33,7 @@ app.use(express.static(path.join(__dirname, "profile")));
 //create api endpoints
 app.use("/api/v1/students", studentRoutes);
 app.use("/api/v1/assignments", assignmentRoutes);
+app.use("/api/v1/user", userRoutes);
 
 app.use(error);
 
