@@ -1,6 +1,7 @@
 const path = require("path");
 const express = require("express");
 const env = require("dotenv");
+const cookieParser = require("cookie-parser");
 const connect = require("./src/config/api");
 const error = require("./src/middleware/error");
 const fileUpload = require("express-fileupload");
@@ -8,7 +9,7 @@ const fileUpload = require("express-fileupload");
 //routes
 const studentRoutes = require("./src/routes/students_routes");
 const assignmentRoutes = require("./src/routes/assignment_routes");
-const userRoutes = require("./src/routes/user");
+const authRoutes = require("./src/routes/auth");
 
 // dotenv config
 env.config({ path: "./src/config/.env" });
@@ -23,6 +24,9 @@ const app = express();
 app.use(express.json());
 //app.use(express.urlencoded({ extended: true }));
 
+//cookie parser
+app.use(cookieParser());
+
 //use file upload
 app.use(fileUpload());
 
@@ -33,7 +37,7 @@ app.use(express.static(path.join(__dirname, "profile")));
 //create api endpoints
 app.use("/api/v1/students", studentRoutes);
 app.use("/api/v1/assignments", assignmentRoutes);
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 app.use(error);
 

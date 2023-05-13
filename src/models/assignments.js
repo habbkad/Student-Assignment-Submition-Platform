@@ -14,6 +14,11 @@ const assignment_schema = mongoose.Schema({
     ref: "students",
     required: true,
   },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: "users",
+    required: true,
+  },
   gen: {
     type: Number,
     required: [true, "Please provide your index number"],

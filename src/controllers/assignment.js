@@ -8,11 +8,13 @@ const path = require("path");
 //secure true
 exports.submit_assignment = async (req, res, next) => {
   req.body.student = req.params.studentId;
+  req.body.user = req.user._id;
+
   const student = await studentModel.findById(req.params.studentId);
   if (!student) {
     return next(new errorResponse(`no student with id ${id} found`, 404));
   }
-
+  console.log("***********" + req.user);
   const newAssignment = await model.create(req.body);
 
   res.status(200).json({ message: "new assignment", newAssignment });
@@ -22,9 +24,15 @@ exports.submit_assignment = async (req, res, next) => {
 //route  api/v1/assignment/:studentsId/:assignmentId/file
 //secure true
 exports.uploadFiles = async (req, res, next) => {
-  console.log("bjjgjhgfhgdhffd");
   const assignment = await model.findById(req.params.assignmentId);
   const student = await studentModel.findById(req.params.studentId);
+
+  if (assignment.user.toString() !== req.user._id) {
+    new errorResponse(
+      `Not authorized to upload ${req.params.assignmentId}`,
+      403
+    );
+  }
 
   if (!assignment) {
     return next(
@@ -95,7 +103,11 @@ exports.all_assignment = async (req, res) => {
 //secure false
 exports.delete_assignment = async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
+  const assignment = await model.findById(req.params.id);
+  if (assignment.user.toString() !== req.user._id) {
+    new errorResponse(`Not authorized to upload ${req.params.id}`, 403);
+  }
+
   try {
     const deleteOne = await model.findByIdAndDelete(id, (err, item) => {
       if (err) {

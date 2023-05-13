@@ -16,6 +16,9 @@ exports.create_student = async (req, res, next) => {
     email,
     profileUrl,
   } = req.body;
+  //adding user id to student req.body
+
+  req.body.user = req.user._id;
 
   const index = await studentModel.find({ indexNumber });
 
@@ -27,16 +30,7 @@ exports.create_student = async (req, res, next) => {
       404
     );
   }
-  const student = await studentModel.create({
-    firstName,
-    middleName,
-    lastName,
-    indexNumber,
-    gen,
-    phone,
-    email,
-    profileUrl,
-  });
+  const student = await studentModel.create(req.body);
 
   res.status(200).json({ message: "create new student sucessful", student });
 };
@@ -53,18 +47,19 @@ exports.allStudents = async (req, res) => {
 //route  api/v1/students/:studentId/profile
 //secure true
 exports.uploadFiles = async (req, res, next) => {
-  console.log("bjjgjhgfhgdhffd");
   const student = await studentModel.findById(req.params.studentId);
 
   if (!student) {
-    return next(
-      new errorResponse(
-        `Student not found with id of ${req.params.studentId}`,
-        404
-      )
+    return next();
+  }
+  //verify is actual user
+
+  if (req.user._id !== student.user.toString()) {
+    new errorResponse(
+      `Not allowed to update student ${req.params.studentId}`,
+      403
     );
   }
-
   if (!req.files) {
     return next(new errorResponse(`Please upload a file`, 400));
   }

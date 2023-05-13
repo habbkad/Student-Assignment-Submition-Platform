@@ -33,7 +33,11 @@ const Student_schema = mongoose.Schema({
     ],
   },
   assignments: [{ type: mongoose.ObjectId }],
-
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: "users",
+    required: true,
+  },
   profileUrl: {
     type: String,
   },
