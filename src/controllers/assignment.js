@@ -14,7 +14,7 @@ exports.submit_assignment = async (req, res, next) => {
   if (!student) {
     return next(new errorResponse(`no student with id ${id} found`, 404));
   }
-  console.log("***********" + req.user);
+  //console.log("***********" + req.user);
   const newAssignment = await model.create(req.body);
 
   res.status(200).json({ message: "new assignment", newAssignment });
