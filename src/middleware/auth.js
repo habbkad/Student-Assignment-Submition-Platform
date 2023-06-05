@@ -5,13 +5,16 @@ const user = require("../models/user");
 exports.protect = async (req, res, next) => {
   let token;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
-    console.log(req.cookie);
-  } else if (req.cookie) {
+  // if (
+  //   req.headers.authorization &&
+  //   req.headers.authorization.startsWith("Bearer")
+  // ) {
+  //   token = req.headers.authorization.split(" ")[1];
+  //   console.log(req.cookie);
+  // } else if (req.cookie) {
+  //   token = req.cookie.token;
+  // }
+  if (req.cookie) {
     token = req.cookie.token;
   }
 
