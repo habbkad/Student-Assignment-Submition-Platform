@@ -1,5 +1,6 @@
 const studentModel = require("../models/students");
 const errorResponse = require("../utils/errorResponse");
+const mongoose = require("mongoose");
 const path = require("path");
 
 //desc   create new student
@@ -35,12 +36,23 @@ exports.create_student = async (req, res, next) => {
   res.status(200).json({ message: "create new student sucessful", student });
 };
 
-//desc   create new student
+//desc   get all students
 //route  api/v1/student
 //secure false
 exports.allStudents = async (req, res) => {
   const students = await studentModel.find();
   res.status(200).json({ message: "all assignments", students });
+};
+//desc   get one student
+//route  api/v1/student
+//secure false
+exports.getStudent = async (req, res) => {
+  let postObjectId = mongoose.Types.ObjectId(req.params.id);
+  const student = await studentModel.findOne({ user: postObjectId });
+  if (!student) {
+    return next(new errorResponse(`no student with id ${id} found`, 404));
+  }
+  res.status(200).json({ message: "all assignments", student });
 };
 
 //desc   upload student profile

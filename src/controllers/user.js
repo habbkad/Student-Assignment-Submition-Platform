@@ -5,7 +5,6 @@ const errorResponse = require("../utils/errorResponse");
 //secure false
 exports.signUpUser = async (req, res) => {
   const { email, password, role } = req.body;
-
   const newUser = await userModel.create({ email, password, role });
 
   //create token
@@ -32,6 +31,8 @@ exports.loginUser = async (req, res, next) => {
 
   //create token
   cookieResponse(user, 200, res);
+
+  console.log(req.cookies);
 };
 
 //send cookie response
@@ -42,11 +43,12 @@ const cookieResponse = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
     ),
+    secure: true,
     httpOnly: true,
   };
 
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ success: true });
+    .json({ success: true, token });
 };

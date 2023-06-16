@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const connect = require("./src/config/api");
 const error = require("./src/middleware/error");
 const fileUpload = require("express-fileupload");
+const cors = require("cors");
 
 //routes
 const studentRoutes = require("./src/routes/students_routes");
@@ -22,10 +23,30 @@ const app = express();
 
 //body parser
 app.use(express.json());
-//app.use(express.urlencoded({ extended: true }));
-
 //cookie parser
 app.use(cookieParser());
+
+//cors
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Max-Age", "1800");
+  res.header("Access-Control-Allow-Headers", "content-type");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "PUT, POST, GET, DELETE, PATCH, OPTIONS"
+  );
+  next();
+});
+app.use(
+  cors({
+    allowCredentials: true,
+    origin: "http://localhost:3000",
+  })
+);
+//app.use(express.urlencoded({ extended: true }));
 
 //use file upload
 app.use(fileUpload());
