@@ -3,12 +3,14 @@ const errorResponse = require("../utils/errorResponse");
 //desc   signUp new user
 //route  api/v1/user
 //secure false
-exports.signUpUser = async (req, res) => {
+exports.signUpUser = async (req, re, next) => {
   const { email, password, role } = req.body;
   const newUser = await userModel.create({ email, password, role });
 
   //create token
   cookieResponse(newUser, 200, res);
+
+  next();
 };
 //desc   login new user
 //route  api/v1/user
@@ -31,8 +33,7 @@ exports.loginUser = async (req, res, next) => {
 
   //create token
   cookieResponse(user, 200, res);
-
-  console.log(req.cookies);
+  next();
 };
 
 //send cookie response
@@ -47,8 +48,20 @@ const cookieResponse = (user, statusCode, res) => {
     httpOnly: true,
   };
 
+  let userData = {
+    id: user._id,
+  };
+
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ success: true, token });
+    .json({ success: true, ...userData, role: user.role });
+};
+
+//desc   signOut user
+//route  api/v1/user
+//secure false
+exports.signOutUser = async (req, res, next) => {
+  res.cookie("token", "").json({ message: "Signed out" });
+  next();
 };

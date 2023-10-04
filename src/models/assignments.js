@@ -37,6 +37,10 @@ const assignment_schema = mongoose.Schema({
     type: String,
     required: [true, "please provide assignment file"],
   },
+  approved: {
+    type: Boolean,
+    default: false,
+  },
   date: {
     type: Date,
     default: Date.now,

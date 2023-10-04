@@ -17,6 +17,15 @@ exports.submit_assignment = async (req, res, next) => {
   //console.log("***********" + req.user);
   const newAssignment = await model.create(req.body);
 
+  for (let item of student.assignments) {
+    console.log(item._id.toString());
+    if (item._id.toString() === newAssignment._id.toString()) {
+      return next(new errorResponse(`assignment already submitted`, 500));
+    }
+  }
+  student.assignments.push({ _id: newAssignment._id });
+  await student.save();
+
   res.status(200).json({ message: "new assignment", newAssignment });
 };
 
@@ -48,6 +57,7 @@ exports.uploadFiles = async (req, res, next) => {
   }
 
   const file = req.files.file;
+  console.log(file);
 
   // Make sure the image is a photo
   if (!file.mimetype.startsWith("image")) {
@@ -128,10 +138,24 @@ exports.delete_assignment = async (req, res, next) => {
 //desc   get single assignment
 //route  api/v1/student/:id
 //secure false
+exports.get_student_assignments = async (req, res, next) => {
+  const { id } = req.params;
+  console.log(req.params);
+  try {
+    const assignment = await model.find({ studentModel: id });
+    if (!assignment) {
+      res.status(404).json({ message: "assignment not available" });
+    }
+    res.status(200).json({ message: "single assignment", assignment });
+  } catch (err) {
+    next(new errorResponse(`assignment not found with id ${id}`, 404));
+  }
+};
 exports.get_single_assignment = async (req, res, next) => {
   const { id } = req.params;
+  console.log(req.params);
   try {
-    const assignment = await model.findOne({ _id: id });
+    const assignment = await model.findById(id);
     if (!assignment) {
       res.status(404).json({ message: "assignment not available" });
     }

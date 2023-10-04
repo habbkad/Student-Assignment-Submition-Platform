@@ -6,6 +6,7 @@ const {
   update_assignment,
   get_single_assignment,
   uploadFiles,
+  get_student_assignments,
 } = require("../controllers/assignment");
 const { protect, authorize } = require("../middleware/auth");
 
@@ -24,6 +25,9 @@ router
   .route("/:id")
   .delete(protect, authorize("student", "tutor"), delete_assignment)
   .put(protect, authorize("student"), update_assignment)
+  .get(protect, authorize("student", "tutor"), get_student_assignments);
+router
+  .route("/single/:id")
   .get(protect, authorize("student", "tutor"), get_single_assignment);
 
 module.exports = router;

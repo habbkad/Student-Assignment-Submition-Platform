@@ -10,6 +10,7 @@ const cors = require("cors");
 //routes
 const studentRoutes = require("./src/routes/students_routes");
 const assignmentRoutes = require("./src/routes/assignment_routes");
+const resourceRoutes = require("./src/routes/resources");
 const authRoutes = require("./src/routes/auth");
 
 // dotenv config
@@ -58,6 +59,7 @@ app.use(express.static(path.join(__dirname, "profile")));
 //create api endpoints
 app.use("/api/v1/students", studentRoutes);
 app.use("/api/v1/assignments", assignmentRoutes);
+app.use("/api/v1/resources", resourceRoutes);
 app.use("/api/v1/auth", authRoutes);
 
 app.use(error);
