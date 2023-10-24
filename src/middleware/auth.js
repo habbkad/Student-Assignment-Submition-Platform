@@ -4,6 +4,7 @@ const user = require("../models/user");
 
 exports.protect = async (req, res, next) => {
   const { token } = req.cookies;
+  console.log(token);
   // console.log(req.cookies);
   // console.log("knkhkj");
 
@@ -32,7 +33,7 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-//hass access to routes
+//has access to routes
 exports.authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {

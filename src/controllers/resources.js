@@ -7,6 +7,7 @@ const resourcesModel = require("../models/learning_resources");
 //route  api/v1/resource
 //secure true
 exports.create_resource = async (req, res, next) => {
+  //onsole.log(req);
   const { module, week, title } = req.body;
   const duplicate_resource = await resourceModel.find({ week });
 
@@ -16,7 +17,7 @@ exports.create_resource = async (req, res, next) => {
 
   const resource = await resourceModel.create(req.body);
   resource.save();
-
+  console.log(resource);
   res.send({
     message: "Successful",
     resource,
@@ -79,10 +80,10 @@ exports.get_all_resource = async (req, res, next) => {
       if (item.module == "HTML") {
         Html.push(item);
       }
-      if (item.module == "CSS") {
+      if (item.module == "Css") {
         Css.push(item);
       }
-      if (item.module == "RESPONSIVE") {
+      if (item.module == "Bootstrap") {
         Responsive.push(item);
       }
     }

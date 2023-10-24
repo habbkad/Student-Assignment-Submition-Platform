@@ -25,7 +25,6 @@ const resourceSchema = new Schema({
   },
   locked: {
     type: Boolean,
-    required: true,
   },
   time: {
     type: Date,

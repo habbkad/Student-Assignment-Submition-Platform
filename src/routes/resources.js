@@ -9,7 +9,7 @@ const { protect, authorize } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.route("/").post(protect, authorize("tutor"), create_resource);
+router.route("/").post(create_resource);
 router.route("/").get(protect, authorize("tutor", "student"), get_all_resource);
 router.route("/:id").put(protect, authorize("tutor"), update_resource);
 router.route("/:id").delete(protect, authorize("tutor"), delete_resource);

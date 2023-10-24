@@ -30,6 +30,9 @@ const assignment_schema = mongoose.Schema({
   github_link: {
     type: String,
   },
+  demo_link: {
+    type: String,
+  },
   topic: {
     type: String,
   },

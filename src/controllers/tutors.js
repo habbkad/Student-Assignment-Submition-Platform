@@ -1,74 +1,66 @@
-const studentModel = require("../models/students");
+const tutorModel = require("../models/tutors");
 const errorResponse = require("../utils/errorResponse");
 const mongoose = require("mongoose");
 const path = require("path");
 
-//desc   create new student
+//desc   create new tutor
 //route  api/v1/student
 //secure false
-exports.create_student = async (req, res, next) => {
-  const {
-    firstName,
-    middleName,
-    lastName,
-    indexNumber,
-    gen,
-    phone,
-    email,
-    profileUrl,
-  } = req.body;
-  //adding user id to student req.body
+exports.create_tutor = async (req, res, next) => {
+  const { firstName, middleName, lastName, staffId, phone, email, profileUrl } =
+    req.body;
+  //adding user id to tutor req.body
 
   req.body.user = req.user._id;
 
-  const index = await studentModel.find({ indexNumber });
+  const index = await tutorModel.find({ staffId });
 
   if (index != []) {
     return next(
       new errorResponse(
-        `Index number ${indexNumber} available.Input correct index`
+        `Index number ${staffId} available.Input correct index`
       ),
       404
     );
   }
-  const student = await studentModel.create(req.body);
+  const tutor = await tutorModel.create(req.body);
 
-  res.status(200).json({ message: "create new student sucessful", student });
+  res.status(200).json({ message: "create new tutor sucessful", tutor });
 };
 
-//desc   get all students
-//route  api/v1/student
+//desc   get all Tutors
+//route  api/v1/tutor
 //secure false
-exports.allStudents = async (req, res) => {
-  const students = await studentModel.find();
-  res.status(200).json({ message: "all assignments", students });
+exports.allTutors = async (req, res) => {
+  const students = await tutorModel.find();
+  res.status(200).json({ message: "all tutors", students });
 };
-//desc   get one student
-//route  api/v1/student
+//desc   get one tutor
+//route  api/v1/tutor
 //secure false
-exports.getStudent = async (req, res) => {
+exports.getTutor = async (req, res) => {
   let postObjectId = mongoose.Types.ObjectId(req.params.id);
-  const student = await studentModel.findOne({ user: postObjectId });
-  if (!student) {
+  const tutor = await tutorModel.findOne({ user: postObjectId });
+  if (!tutor) {
     return next(new errorResponse(`no student with id ${id} found`, 404));
   }
-  res.status(200).json({ message: "all assignments", student });
+  res.status(200).json({ message: "all assignments", tutor });
 };
 
-//desc   upload student profile
+//desc   upload tutor profile
 //route  api/v1/students/:studentId/profile
 //secure true
 exports.uploadFiles = async (req, res, next) => {
-  const student = await studentModel.findById(req.params.studentId);
+  const tutor = await tutorModel.findById(req.params.tutorID);
 
-  if (!student) {
+  if (!tutor) {
     return next();
   }
   //verify is actual user
 
-  if (req.user._id !== student.user.toString()) {
+  if (req.user._id !== tutor.user.toString()) {
     new errorResponse(
-      `Not allowed to update student ${req.params.studentId}`,
+      `Not allowed to update student ${req.params.tutorID}`,
       403
     );
   }
@@ -100,7 +92,7 @@ exports.uploadFiles = async (req, res, next) => {
       return next(new errorResponse(`Problem with file upload`, 500));
     }
 
-    await studentModel.findByIdAndUpdate(req.params.studentId, {
+    await tutorModel.findByIdAndUpdate(req.params.tutorID, {
       profileUrl: file.name,
     });
 

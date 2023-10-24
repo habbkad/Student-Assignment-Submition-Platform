@@ -12,6 +12,7 @@ const studentRoutes = require("./src/routes/students_routes");
 const assignmentRoutes = require("./src/routes/assignment_routes");
 const resourceRoutes = require("./src/routes/resources");
 const authRoutes = require("./src/routes/auth");
+const tutorRoutes = require("./src/routes/tutor_routes");
 
 // dotenv config
 env.config({ path: "./src/config/.env" });
@@ -61,6 +62,7 @@ app.use("/api/v1/students", studentRoutes);
 app.use("/api/v1/assignments", assignmentRoutes);
 app.use("/api/v1/resources", resourceRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/tutor", tutorRoutes);
 
 app.use(error);
 

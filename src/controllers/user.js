@@ -62,6 +62,15 @@ const cookieResponse = (user, statusCode, res) => {
 //route  api/v1/user
 //secure false
 exports.signOutUser = async (req, res, next) => {
-  res.cookie("token", "").json({ message: "Signed out" });
+  res
+    .cookie("token", "", {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+      ),
+      secure: true,
+      httpOnly: true,
+    })
+    .json({ message: "Signed out" });
+  console.log(req.cookies, "bjhgfhfd");
   next();
 };
