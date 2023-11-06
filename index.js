@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 app.use(
   cors({
     allowCredentials: true,
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3001",
   })
 );
 //app.use(express.urlencoded({ extended: true }));
