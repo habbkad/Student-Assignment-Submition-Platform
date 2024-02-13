@@ -151,6 +151,9 @@ exports.get_student_assignments = async (req, res, next) => {
     next(new errorResponse(`assignment not found with id ${id}`, 404));
   }
 };
+//desc   get single assignment
+//route  api/v1/assignment/:id
+//secure true
 exports.get_single_assignment = async (req, res, next) => {
   const { id } = req.params;
   console.log(req.params);
@@ -165,11 +168,29 @@ exports.get_single_assignment = async (req, res, next) => {
   }
 };
 
+// //desc   get all unapproved assignments
+// //route  api/v1/assignment
+// //secure true
+exports.get_unapproved_assignments = async (req, res, next) => {
+  try {
+    const unapproved = await model.find({ approved: false }).exec();
+    console.log(unapproved);
+    if (!unapproved) {
+      return res.status(404).json({ message: "assignment not available" });
+    }
+    res.status(200).json({ message: "unapproved assignment", unapproved });
+    next();
+  } catch (err) {
+    next(new errorResponse(`assignment not found with `, 404));
+  }
+};
+
 //desc   update assignment
 //route  api/v1/assignment/:id
 //secure false
 exports.update_assignment = async (req, res, next) => {
   const { id } = req.params;
-  const update = await model.findByIdAndUpdate(id, { title: "JavaScript" });
+  // console.log(req);
+  const update = await model.findByIdAndUpdate(id, req.body);
   res.status(200).json({ message: "update assignment", update });
 };
