@@ -63,6 +63,9 @@ app.use("/api/v1/assignments", assignmentRoutes);
 app.use("/api/v1/resources", resourceRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/tutor", tutorRoutes);
+app.use("/*", (req, res) => {
+  res.send({ error: "route does not exist" });
+});
 
 app.use(error);
 
