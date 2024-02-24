@@ -3,13 +3,12 @@ const errorResponse = require("../utils/errorResponse");
 //desc   signUp new user
 //route  api/v1/user
 //secure false
-exports.signUpUser = async (req, re, next) => {
+exports.signUpUser = async (req, res, next) => {
   const { email, password, role } = req.body;
   const newUser = await userModel.create({ email, password, role });
 
   //create token
   cookieResponse(newUser, 200, res);
-
   next();
 };
 //desc   login new user

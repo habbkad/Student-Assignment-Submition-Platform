@@ -142,7 +142,7 @@ exports.get_student_assignments = async (req, res, next) => {
   const { id } = req.params;
   console.log(req.params);
   try {
-    const assignment = await model.find({ studentModel: id });
+    const assignment = await model.find({ student: id });
     if (!assignment) {
       res.status(404).json({ message: "assignment not available" });
     }
@@ -173,8 +173,8 @@ exports.get_single_assignment = async (req, res, next) => {
 // //secure true
 exports.get_unapproved_assignments = async (req, res, next) => {
   try {
-    const unapproved = await model.find({ approved: false }).exec();
-    console.log(unapproved);
+    const unapproved = await model.find({ approved: false });
+
     if (!unapproved) {
       return res.status(404).json({ message: "assignment not available" });
     }

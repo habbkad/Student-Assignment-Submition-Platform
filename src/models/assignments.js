@@ -44,6 +44,7 @@ const assignment_schema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  comment: [{ tutor: String, comment: String }],
   date: {
     type: Date,
     default: Date.now,

@@ -13,6 +13,9 @@ const { protect, authorize } = require("../middleware/auth");
 
 const router = express.Router({ mergeParams: true });
 router.route("/").get(protect, authorize("tutor"), all_assignment);
+router
+  .route("/unapproved")
+  .get(protect, authorize("tutor"), get_unapproved_assignments);
 
 router
   .route("/:studentId")
@@ -27,9 +30,6 @@ router
   .delete(protect, authorize("student", "tutor"), delete_assignment)
   .put(protect, authorize("student", "tutor"), update_assignment)
   .get(protect, authorize("student", "tutor"), get_student_assignments);
-router
-  .route("/unapproved")
-  .get(protect, authorize("tutor"), get_unapproved_assignments);
 
 router
   .route("/single/:id")

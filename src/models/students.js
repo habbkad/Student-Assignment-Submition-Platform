@@ -24,6 +24,19 @@ const Student_schema = mongoose.Schema({
     type: String,
     length: [20, "phone number cannot excess more than 20"],
   },
+  dayOfBirth: Date,
+  gender: {
+    type: String,
+    required: true,
+  },
+  gardianEmail: {
+    type: String,
+    required: [true, "Please provide an email"],
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      "please provide a valid email. ",
+    ],
+  },
   email: {
     type: String,
     required: [true, "Please provide an email"],

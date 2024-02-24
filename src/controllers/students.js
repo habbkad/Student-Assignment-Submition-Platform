@@ -15,6 +15,9 @@ exports.create_student = async (req, res, next) => {
     gen,
     phone,
     email,
+    gender,
+    dayOfBirth,
+    gardianEmail,
     profileUrl,
   } = req.body;
   //adding user id to student req.body
@@ -23,7 +26,7 @@ exports.create_student = async (req, res, next) => {
 
   const index = await studentModel.find({ indexNumber });
 
-  if (index != []) {
+  if (!index) {
     return next(
       new errorResponse(
         `Index number ${indexNumber} available.Input correct index`
