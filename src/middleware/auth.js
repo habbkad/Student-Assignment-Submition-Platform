@@ -3,20 +3,17 @@ const errorResponse = require("../utils/errorResponse");
 const user = require("../models/user");
 
 exports.protect = async (req, res, next) => {
-  const { token } = req.cookies;
-  // console.log(token);
-  // console.log(req);
-  // console.log("knkhkj");
+  let token;
 
-  // if (
-  //   req.headers.authorization &&
-  //   req.headers.authorization.startsWith("Bearer")
-  // ) {
-  //   token = req.headers.authorization.split(" ")[1];
-  //   console.log(req.cookie);
-  // } else if (req.cookie) {
-  //   token = req.cookie.token;
-  // }
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+    console.log(req.cookie);
+  } else if (req.cookie) {
+    token = req.cookie.token;
+  }
 
   if (!token) {
     return next(new errorResponse("not authorized to access this route", 401));
