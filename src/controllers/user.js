@@ -54,7 +54,13 @@ const cookieResponse = (user, statusCode, res) => {
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ success: true, ...userData, role: user.role, token });
+    .json({
+      success: true,
+      ...userData,
+      email: user.email,
+      role: user.role,
+      token,
+    });
 };
 
 //desc   signOut user
