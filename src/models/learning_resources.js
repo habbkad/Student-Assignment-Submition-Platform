@@ -15,6 +15,9 @@ const resourceSchema = new Schema({
     type: String,
     required: true,
   },
+  resource_text: {
+    type: String,
+  },
   week: {
     type: Number,
     required: true,

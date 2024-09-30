@@ -5,34 +5,46 @@ const errorResponse = require("../utils/errorResponse");
 //secure false
 exports.signUpUser = async (req, res, next) => {
   const { email, password, role } = req.body;
-  const newUser = await userModel.create({ email, password, role });
+  try {
+    const user = await userModel.findOne({ email });
 
-  //create token
-  cookieResponse(newUser, 200, res);
-  next();
+    if (user) {
+      return next(new errorResponse("Provide valid credentials", 401));
+    }
+    const newUser = await userModel.create({ email, password, role });
+
+    //create token
+    cookieResponse(newUser, 200, res);
+    next();
+  } catch (error) {
+    res.status(404).json({ message: "error in create", error });
+  }
 };
 //desc   login new user
 //route  api/v1/user
 //secure false
 exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
+  try {
+    const user = await userModel.findOne({ email }).select("+password");
 
-  const user = await userModel.findOne({ email }).select("+password");
+    if (!user) {
+      return next(new errorResponse("Provide valid credentials", 401));
+    }
 
-  if (!user) {
-    return next(new errorResponse("Provide valid credentials", 401));
+    //check password
+    const isUser = await user.comparePassword(password);
+
+    if (!isUser) {
+      return next(new errorResponse("Provide valid credentials", 401));
+    }
+
+    //create token
+    cookieResponse(user, 200, res);
+    next();
+  } catch (error) {
+    res.status(404).json({ message: "error in login", error });
   }
-
-  //check password
-  const isUser = await user.comparePassword(password);
-
-  if (!isUser) {
-    return next(new errorResponse("Provide valid credentials", 401));
-  }
-
-  //create token
-  cookieResponse(user, 200, res);
-  next();
 };
 
 //send cookie response

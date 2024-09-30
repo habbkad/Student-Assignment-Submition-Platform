@@ -1,4 +1,5 @@
 const studentModel = require("../models/students");
+const userModel = require("../models/user");
 const errorResponse = require("../utils/errorResponse");
 const mongoose = require("mongoose");
 const path = require("path");
@@ -7,36 +8,78 @@ const path = require("path");
 //route  api/v1/student
 //secure false
 exports.create_student = async (req, res, next) => {
+  const { indexNumber } = req.body;
+  //adding user id to student req.body
+
+  req.body.user = req.user._id;
+  req.body.email = req.user.email;
+
+  try {
+    const userStudent = await userModel.findById(req.user._id);
+    if (!userStudent || userStudent.role !== "student") {
+      return next(new errorResponse("user not present or not a student", 404));
+    }
+    console.log(userStudent);
+
+    const index = await studentModel.find({ indexNumber });
+
+    if (index) {
+      return next(
+        new errorResponse(
+          `Index number ${indexNumber} available.Input correct index`
+        ),
+        404
+      );
+    }
+    const student = await studentModel.create(req.body);
+
+    res.status(200).json({ message: "create new student sucessful", student });
+  } catch (error) {
+    res.status(404).json({ message: "Error ", error });
+  }
+};
+//desc   create new student
+//route  api/v1/student
+//secure false
+exports.updateStudent = async (req, res, next) => {
   const {
     firstName,
     middleName,
     lastName,
-    indexNumber,
     gen,
     phone,
-    email,
-    gender,
-    dayOfBirth,
-    gardianEmail,
     profileUrl,
+    indexNumber,
   } = req.body;
   //adding user id to student req.body
 
   req.body.user = req.user._id;
+  req.body.email = req.user.email;
+  const { id } = req.params;
 
-  const index = await studentModel.find({ indexNumber });
+  try {
+    const userStudent = await userModel.findById(req.user._id);
+    if (!userStudent || userStudent.role !== "student") {
+      return next(new errorResponse("user not present or not a student", 404));
+    }
+    console.log(userStudent);
 
-  if (!index) {
-    return next(
-      new errorResponse(
-        `Index number ${indexNumber} available.Input correct index`
-      ),
-      404
-    );
+    const index = await studentModel.find({ indexNumber });
+
+    if (!index) {
+      return next(
+        new errorResponse(
+          `Index number ${indexNumber} available.Input correct index`
+        ),
+        404
+      );
+    }
+    const student = await studentModel.findByIdAndUpdate(id, req.body);
+
+    res.status(200).json({ message: "update new student sucessful", student });
+  } catch (error) {
+    res.status(404).json({ message: "Error ", error });
   }
-  const student = await studentModel.create(req.body);
-
-  res.status(200).json({ message: "create new student sucessful", student });
 };
 
 //desc   get all students
@@ -49,11 +92,17 @@ exports.allStudents = async (req, res) => {
 //desc   get one student
 //route  api/v1/student
 //secure false
-exports.getStudent = async (req, res) => {
+exports.getStudent = async (req, res, next) => {
+  console.log(req.params.id);
+
   let postObjectId = mongoose.Types.ObjectId(req.params.id);
   const student = await studentModel.findOne({ user: postObjectId });
+  console.log(student);
+
   if (!student) {
-    return next(new errorResponse(`no student with id ${id} found`, 404));
+    return next(
+      new errorResponse(`no student with id ${postObjectId} found`, 404)
+    );
   }
   res.status(200).json({ message: "all assignments", student });
 };

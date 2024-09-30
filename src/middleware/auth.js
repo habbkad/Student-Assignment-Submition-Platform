@@ -4,21 +4,26 @@ const user = require("../models/user");
 
 exports.protect = async (req, res, next) => {
   let token;
-  console.log(req.headers);
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
-    console.log(token);
-  } else if (req.cookie) {
-    token = req.cookie.token;
+  //console.log(req.headers);
+  // if (
+  //   req.headers.authorization &&
+  //   req.headers.authorization.startsWith("Bearer")
+  // ) {
+  //   token = req.headers.authorization.split(" ")[1];
+  //   // console.log(token);
+  // } else if (req.cookie) {
+  //   token = req.cookie.token;
+  // }
+  //console.log(req.cookies);
+
+  if (req.cookies) {
+    token = req.cookies.token;
   }
 
   if (!token) {
     return next(new errorResponse("not authorized to access this route", 401));
   }
-
+  // console.log(token);
   try {
     //verify token
     const decode = jwt.verify(token, process.env.JWT_SECRETE);
@@ -44,4 +49,17 @@ exports.authorize = (...roles) => {
     }
     next();
   };
+};
+
+//active account
+exports.active = (req, res, next) => {
+  if (!req.user.active) {
+    return next(
+      new errorResponse(
+        `${res.user.role} not authorized to access this route. Account not active`,
+        403
+      )
+    );
+  }
+  next();
 };

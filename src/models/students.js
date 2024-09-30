@@ -27,11 +27,9 @@ const Student_schema = mongoose.Schema({
   dayOfBirth: Date,
   gender: {
     type: String,
-    required: true,
   },
   gardianEmail: {
     type: String,
-    required: [true, "Please provide an email"],
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       "please provide a valid email. ",
@@ -53,6 +51,11 @@ const Student_schema = mongoose.Schema({
   },
   profileUrl: {
     type: String,
+  },
+
+  date: {
+    type: Date,
+    default: Date.now,
   },
 });
 

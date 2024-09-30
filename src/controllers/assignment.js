@@ -9,7 +9,7 @@ const path = require("path");
 exports.submit_assignment = async (req, res, next) => {
   req.body.student = req.params.studentId;
   req.body.user = req.user._id;
-
+  // console.log(req.body);
   const student = await studentModel.findById(req.params.studentId);
   if (!student) {
     return next(new errorResponse(`no student with id ${id} found`, 404));
@@ -18,7 +18,7 @@ exports.submit_assignment = async (req, res, next) => {
   const newAssignment = await model.create(req.body);
 
   for (let item of student.assignments) {
-    console.log(item._id.toString());
+    // console.log(item._id.toString());
     if (item._id.toString() === newAssignment._id.toString()) {
       return next(new errorResponse(`assignment already submitted`, 500));
     }
