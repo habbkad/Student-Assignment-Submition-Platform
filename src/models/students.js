@@ -44,6 +44,7 @@ const Student_schema = mongoose.Schema({
     ],
   },
   assignments: [{ type: mongoose.ObjectId }],
+  courses: [{ type: String }],
   user: {
     type: mongoose.Schema.ObjectId,
     ref: "users",
